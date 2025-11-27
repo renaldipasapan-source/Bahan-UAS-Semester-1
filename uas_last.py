@@ -395,15 +395,34 @@ class Game:
 
     def draw_game(self):
         SCREEN.fill(BG_COLOR)
-        # header
-        header = pygame.Rect(0,0,SCREEN_WIDTH,84)
-        draw_rounded_rect(SCREEN, header, CARD_COLOR, radius=0)
-        title_str = f"{self.player_name}  •  Skor: {self.score}"
-        t = header_font.render(title_str, True, WHITE)
-        SCREEN.blit(t, (20, 20))
-        timer_s = header_font.render(f"Waktu: {self.time_left}s", True, (255,200,80) if self.time_left > 10 else RED)
-        SCREEN.blit(timer_s, (SCREEN_WIDTH - 220, 20))
 
+        # HEADER BAR
+        header = pygame.Rect(0, 0, SCREEN_WIDTH, 84)
+        draw_rounded_rect(SCREEN, header, CARD_COLOR, radius=0)
+
+        # --- LEFT: Player Name ---
+        name_text = header_font.render(self.player_name, True, WHITE)
+        SCREEN.blit(name_text, (20, header.height//2 - name_text.get_height()//2))
+
+        # --- CENTER: SCORE ---
+        score_text = header_font.render(f"Skor: {self.score}", True, (255, 220, 120))
+        SCREEN.blit(
+            score_text,
+            score_text.get_rect(center=(SCREEN_WIDTH//2, header.height//2))
+        )
+
+        # --- RIGHT: Timer ---
+        timer_color = (255,200,80) if self.time_left > 10 else RED
+        timer_text = header_font.render(f"{self.time_left}s", True, timer_color)
+
+        SCREEN.blit(
+            timer_text,
+            (SCREEN_WIDTH - timer_text.get_width() - 20,
+            header.height//2 - timer_text.get_height()//2)
+        )
+        # --- BOTTOM BORDER ---
+        pygame.draw.line(SCREEN, (150,170,220), (0, header.height), (SCREEN_WIDTH, header.height), 2)
+        
         # image
         img = self.images[self.current_q]
         SCREEN.blit(img, img.get_rect(center=(SCREEN_WIDTH//2, 270)))
